@@ -10,11 +10,6 @@ import Foundation
 struct FilmModel: Decodable, Hashable {
     var page: Int
     var results: [Results]
-    
-//    var identifier = UUID()
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(identifier)
-//    }
 }
 
 struct Results: Decodable, Hashable {
@@ -24,9 +19,4 @@ struct Results: Decodable, Hashable {
     var poster_path: String
     var title: String
     var release_date: String
-    
-//    var identifier = UUID()
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(identifier)
-//    }
 }

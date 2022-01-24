@@ -14,13 +14,12 @@ class ViewController: UIViewController {
     }
     
     var filmModel: [Results] = []
-    var tvModel: TVModel! = nil
+//    var tvModel: TVModel! = nil
     var collectionView: UICollectionView! = nil
     let loader: ServiceProtocol = Service()
     
 //    var dataSource: UICollectionViewDiffableDataSource<FilmModel, TVModel>! = nil
     var dataSource: UICollectionViewDiffableDataSource<SectionKind, Results>! = nil
-//    var currentSnapshot: NSDiffableDataSourceSnapshot<FilmModel, TVModel>! = nil
     static let titleElementKind = "title-element-kind"
     
     override func viewDidLoad() {
@@ -29,13 +28,13 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .systemBackground
         configureHierarchy()
+        
         loader.getData(urlString: loader.urlFilms) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let model):
                     self.filmModel = model.results
                     self.reloadData()
-//                    self.collectionView.reloadData()
                 case .failure(_):
                     fatalError("error load")
                 }
@@ -60,13 +59,13 @@ extension ViewController {
             section.interGroupSpacing = 20
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
 
-//            let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-//                                                  heightDimension: .estimated(44))
-//            let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
-//                layoutSize: titleSize,
-//                elementKind: ViewController.titleElementKind,
-//                alignment: .top)
-//            section.boundarySupplementaryItems = [titleSupplementary]
+            let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                  heightDimension: .estimated(44))
+            let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: titleSize,
+                elementKind: ViewController.titleElementKind,
+                alignment: .top)
+            section.boundarySupplementaryItems = [titleSupplementary]
             return section
         }
 
@@ -84,6 +83,7 @@ extension ViewController {
         collectionView.backgroundColor = .systemBackground
 //        collectionView.delegate = self
         collectionView.register(FilmCell.self, forCellWithReuseIdentifier: FilmCell.reuseIdentifier)
+        collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: ViewController.titleElementKind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
@@ -99,10 +99,15 @@ extension ViewController {
     private func setupDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SectionKind, Results>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, model) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilmCell.reuseIdentifier, for: indexPath) as! FilmCell
-//            print(model)
             cell.addData(title: model.title, data: model.release_date)
             return cell
         })
+        
+        dataSource.supplementaryViewProvider = { (collectionView, kind, index) in
+            let supplementary = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier, for: index) as! TitleSupplementaryView
+            supplementary.label.text = "Популярные фильмы"
+            return supplementary
+        }
     }
     
     func reloadData() {
