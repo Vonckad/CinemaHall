@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E3B372E0279EE1C50022EF44 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372DF279EE1C50022EF44 /* Service.swift */; };
 		E3B372E2279F1B2A0022EF44 /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */; };
+		E3B372E4279F28430022EF44 /* TVModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E3279F28430022EF44 /* TVModel.swift */; };
 		E3E3ABC4279D587800D63507 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC3279D587800D63507 /* AppDelegate.swift */; };
 		E3E3ABC6279D587800D63507 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC5279D587800D63507 /* SceneDelegate.swift */; };
 		E3E3ABC8279D587800D63507 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC7279D587800D63507 /* ViewController.swift */; };
@@ -21,6 +22,7 @@
 /* Begin PBXFileReference section */
 		E3B372DF279EE1C50022EF44 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
+		E3B372E3279F28430022EF44 /* TVModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVModel.swift; sourceTree = "<group>"; };
 		E3E3ABC0279D587800D63507 /* CinemaHall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CinemaHall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3E3ABC3279D587800D63507 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E3E3ABC5279D587800D63507 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				E3E3ABD9279D653B00D63507 /* FilmModel.swift */,
+				E3B372E3279F28430022EF44 /* TVModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				E3B372E0279EE1C50022EF44 /* Service.swift in Sources */,
 				E3E3ABC8279D587800D63507 /* ViewController.swift in Sources */,
 				E3E3ABC4279D587800D63507 /* AppDelegate.swift in Sources */,
+				E3B372E4279F28430022EF44 /* TVModel.swift in Sources */,
 				E3B372E2279F1B2A0022EF44 /* TitleSupplementaryView.swift in Sources */,
 				E3E3ABC6279D587800D63507 /* SceneDelegate.swift in Sources */,
 				E3E3ABDF279D69AC00D63507 /* FilmCell.swift in Sources */,

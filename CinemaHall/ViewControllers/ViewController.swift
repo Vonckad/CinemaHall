@@ -8,18 +8,19 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    enum SectionKind {
-        case main
+    
+    enum SectionKind: Int, CaseIterable {
+        case main, tv
     }
     
     var filmModel: [Results] = []
-//    var tvModel: TVModel! = nil
+    var tvModel: [ResultsTv] = []
+    
     var collectionView: UICollectionView! = nil
     let loader: ServiceProtocol = Service()
     
-//    var dataSource: UICollectionViewDiffableDataSource<FilmModel, TVModel>! = nil
-    var dataSource: UICollectionViewDiffableDataSource<SectionKind, Results>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<SectionKind, AnyHashable>! = nil
+    
     static let titleElementKind = "title-element-kind"
     
     override func viewDidLoad() {
@@ -29,7 +30,7 @@ class ViewController: UIViewController {
         view.backgroundColor = .systemBackground
         configureHierarchy()
         
-        loader.getData(urlString: loader.urlFilms) { result in
+        loader.getDataFilms(urlString: loader.urlFilms) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let model):
@@ -37,6 +38,18 @@ class ViewController: UIViewController {
                     self.reloadData()
                 case .failure(_):
                     fatalError("error load")
+                }
+            }
+        }
+        
+        loader.getDataTv(urlString: loader.tvUrl) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let model):
+                    self.tvModel = model.results
+                    self.reloadData()
+                case .failure(_):
+                    fatalError("error load tv")
                 }
             }
         }
@@ -97,24 +110,53 @@ extension ViewController {
     }
     
     private func setupDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<SectionKind, Results>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, model) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<SectionKind, AnyHashable>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, model) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilmCell.reuseIdentifier, for: indexPath) as! FilmCell
-            cell.addData(title: model.title, data: model.release_date)
-            return cell
+            
+            let section = SectionKind(rawValue: indexPath.section)!
+            
+            switch section {
+            case .tv:
+                let dat = model as! ResultsTv
+                cell.addData(title: dat.name, data: dat.first_air_date)
+                return cell
+            case .main:
+                let dat = model as! Results
+                cell.addData(title: dat.title, data: dat.release_date)
+                return cell
+            }
         })
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, index) in
             let supplementary = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier, for: index) as! TitleSupplementaryView
-            supplementary.label.text = "Популярные фильмы"
-            return supplementary
+            
+            let section = SectionKind(rawValue: index.section)!
+            
+            switch section {
+            case .tv:
+                supplementary.label.text = "Популярные сериалы"
+                return supplementary
+            case .main:
+                supplementary.label.text = "Популярные фильмы"
+                return supplementary
+            }
         }
     }
     
     func reloadData() {
-        var snapshot = NSDiffableDataSourceSnapshot<SectionKind, Results>()
+        var snapshot = NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>()
         
-        snapshot.appendSections([.main])
-        snapshot.appendItems(filmModel)
+        SectionKind.allCases.forEach { (sectionKind) in
+            switch sectionKind {
+            case .main:
+                snapshot.appendSections([.main])
+                snapshot.appendItems(filmModel)
+            case .tv:
+                snapshot.appendSections([.tv])
+                snapshot.appendItems(tvModel)
+            }
+        }
+
         dataSource.apply(snapshot, animatingDifferences: false)
     }
 }
