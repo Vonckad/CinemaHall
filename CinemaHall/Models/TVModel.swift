@@ -16,7 +16,7 @@ struct ResultsTv: Decodable, Hashable {
     var id: Int
     var original_name: String
     var overview: String
-//    var poster_path: String
+    var poster_path: String?
     var name: String
     var first_air_date: String
 }

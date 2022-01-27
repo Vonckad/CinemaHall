@@ -10,6 +10,8 @@
 		E3B372E0279EE1C50022EF44 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372DF279EE1C50022EF44 /* Service.swift */; };
 		E3B372E2279F1B2A0022EF44 /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */; };
 		E3B372E4279F28430022EF44 /* TVModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E3279F28430022EF44 /* TVModel.swift */; };
+		E3B372E627A1CBA40022EF44 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E527A1CBA40022EF44 /* MovieViewController.swift */; };
+		E3B372EC27A2B1D00022EF44 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E3B372EB27A2B1D00022EF44 /* Kingfisher */; };
 		E3E3ABC4279D587800D63507 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC3279D587800D63507 /* AppDelegate.swift */; };
 		E3E3ABC6279D587800D63507 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC5279D587800D63507 /* SceneDelegate.swift */; };
 		E3E3ABC8279D587800D63507 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E3ABC7279D587800D63507 /* ViewController.swift */; };
@@ -23,6 +25,7 @@
 		E3B372DF279EE1C50022EF44 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
 		E3B372E3279F28430022EF44 /* TVModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVModel.swift; sourceTree = "<group>"; };
+		E3B372E527A1CBA40022EF44 /* MovieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewController.swift; sourceTree = "<group>"; };
 		E3E3ABC0279D587800D63507 /* CinemaHall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CinemaHall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3E3ABC3279D587800D63507 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E3E3ABC5279D587800D63507 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -39,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3B372EC27A2B1D00022EF44 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				E3E3ABC7279D587800D63507 /* ViewController.swift */,
+				E3B372E527A1CBA40022EF44 /* MovieViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -135,6 +140,9 @@
 			dependencies = (
 			);
 			name = CinemaHall;
+			packageProductDependencies = (
+				E3B372EB27A2B1D00022EF44 /* Kingfisher */,
+			);
 			productName = CinemaHall;
 			productReference = E3E3ABC0279D587800D63507 /* CinemaHall.app */;
 			productType = "com.apple.product-type.application";
@@ -163,6 +171,9 @@
 				Base,
 			);
 			mainGroup = E3E3ABB7279D587800D63507;
+			packageReferences = (
+				E3B372EA27A2B1D00022EF44 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			productRefGroup = E3E3ABC1279D587800D63507 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -194,6 +205,7 @@
 				E3E3ABC4279D587800D63507 /* AppDelegate.swift in Sources */,
 				E3B372E4279F28430022EF44 /* TVModel.swift in Sources */,
 				E3B372E2279F1B2A0022EF44 /* TitleSupplementaryView.swift in Sources */,
+				E3B372E627A1CBA40022EF44 /* MovieViewController.swift in Sources */,
 				E3E3ABC6279D587800D63507 /* SceneDelegate.swift in Sources */,
 				E3E3ABDF279D69AC00D63507 /* FilmCell.swift in Sources */,
 				E3E3ABDA279D653B00D63507 /* FilmModel.swift in Sources */,
@@ -406,6 +418,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E3B372EA27A2B1D00022EF44 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E3B372EB27A2B1D00022EF44 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E3B372EA27A2B1D00022EF44 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E3E3ABB8279D587800D63507 /* Project object */;
 }

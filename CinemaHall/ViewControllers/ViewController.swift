@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ViewController: UIViewController {
     
@@ -20,8 +21,10 @@ class ViewController: UIViewController {
     let loader: ServiceProtocol = Service()
     
     var dataSource: UICollectionViewDiffableDataSource<SectionKind, AnyHashable>! = nil
+    var currentSnapshot: NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>! = nil
     
     static let titleElementKind = "title-element-kind"
+    var urlPoster = "https://image.tmdb.org/t/p/original/"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +60,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController {
-    func createLayout() -> UICollectionViewLayout {
+    private func createLayout() -> UICollectionViewLayout {
         let sectionProvider = { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                  heightDimension: .fractionalHeight(1.0))
@@ -90,11 +93,11 @@ extension ViewController {
         return layout
     }
     
-    func configureHierarchy() {
+    private func configureHierarchy() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .systemBackground
-//        collectionView.delegate = self
+        collectionView.delegate = self
         collectionView.register(FilmCell.self, forCellWithReuseIdentifier: FilmCell.reuseIdentifier)
         collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: ViewController.titleElementKind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
         view.addSubview(collectionView)
@@ -112,16 +115,31 @@ extension ViewController {
     private func setupDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SectionKind, AnyHashable>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, model) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilmCell.reuseIdentifier, for: indexPath) as! FilmCell
+            cell.imageView.kf.indicatorType = .activity
             
             let section = SectionKind(rawValue: indexPath.section)!
             
             switch section {
             case .tv:
                 let dat = model as! ResultsTv
+                
+                let imageView = cell.imageView
+                let urlString = self.urlPoster + dat.poster_path!
+                let url = URL(string: urlString)!
+                KF.url(url)
+                    .fade(duration: 1)
+                    .set(to: imageView)
                 cell.addData(title: dat.name, data: dat.first_air_date)
                 return cell
             case .main:
                 let dat = model as! Results
+                
+                let imageView = cell.imageView
+                let urlString = self.urlPoster + dat.poster_path
+                let url = URL(string: urlString)!
+                KF.url(url)
+                    .fade(duration: 1)
+                    .set(to: imageView)
                 cell.addData(title: dat.title, data: dat.release_date)
                 return cell
             }
@@ -143,21 +161,51 @@ extension ViewController {
         }
     }
     
-    func reloadData() {
-        var snapshot = NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>()
+    private func reloadData() {
+        currentSnapshot = NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>()
         
         SectionKind.allCases.forEach { (sectionKind) in
             switch sectionKind {
             case .main:
-                snapshot.appendSections([.main])
-                snapshot.appendItems(filmModel)
+                currentSnapshot.appendSections([.main])
+                currentSnapshot.appendItems(filmModel)
             case .tv:
-                snapshot.appendSections([.tv])
-                snapshot.appendItems(tvModel)
+                currentSnapshot.appendSections([.tv])
+                currentSnapshot.appendItems(tvModel)
             }
         }
 
-        dataSource.apply(snapshot, animatingDifferences: false)
+        dataSource.apply(currentSnapshot, animatingDifferences: false)
+    }
+}
+
+//MARK: - UICollectionViewDelegate
+extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let section = SectionKind(rawValue: indexPath.section)!
+        
+        switch section {
+        case .tv:
+            guard let tv = self.dataSource.itemIdentifier(for: indexPath) as? ResultsTv else {
+                collectionView.deselectItem(at: indexPath, animated: true)
+                return
+            }
+            let detailViewController = MovieViewController(name: tv.name, data: tv.first_air_date, navigationTitle: "Популярные сериалы")
+            self.navigationController?.pushViewController(detailViewController, animated: true)
+        case .main:
+            guard let film = self.dataSource.itemIdentifier(for: indexPath) as? Results else {
+                collectionView.deselectItem(at: indexPath, animated: true)
+                return
+            }
+            let detailViewController = MovieViewController(name: film.title, data: film.release_date, navigationTitle: "Популярные фильмы")
+            self.navigationController?.pushViewController(detailViewController, animated: true)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        // This will cancel all unfinished downloading task when the cell disappearing.
+        (cell as! FilmCell).imageView.kf.cancelDownloadTask()
     }
 }
 
