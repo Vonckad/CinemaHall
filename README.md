@@ -1,5 +1,10 @@
 # CinemaHall
 
+## Установка <a href="https://cocoapods.org/pods/Kingfisher#swift-package-manager"> Kingfisher</a>
+- File > Swift Packages > Add Package Dependency
+- Добавить https://github.com/onevcat/Kingfisher.git
+- Выбрать "Up to Next Major" with "7.0.0"
+
 ## Декомпозиция
 
 1. Обдумать как делать проект, что использовать. - **1 день**
