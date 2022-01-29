@@ -1,4 +1,18 @@
 # CinemaHall
+## Задачи
+
+
+Сделать приложение, показывающее популярные сегодня фильмы и сериалы с возможностью посмотреть подробности: описание, длительность, оценку, актеров и т.п.
+
+
+<p align="center">
+<img src="https://cdn.dribbble.com/users/4935112/screenshots/14791304/media/7c8d3b64d082c5b8556d23864d965d99.png"> 
+</p>
+
+## Установка <a href="https://cocoapods.org/pods/Kingfisher#swift-package-manager"> Kingfisher</a>
+- File > Swift Packages > Add Package Dependency
+- Добавить https://github.com/onevcat/Kingfisher.git
+- Выбрать "Up to Next Major" with "7.0.0"
 
 ## Декомпозиция
 
@@ -16,16 +30,6 @@
 12. Реализовать кнопку “Watch Now”. - **2 часа**
 13. Реализовать добавление закладок (избранное). - **3 часа**
 14. Рефакторинг. - **2 часа**
-
-## Задачи
-
-
-Сделать приложение, показывающее популярные сегодня фильмы и сериалы с возможностью посмотреть подробности: описание, длительность, оценку, актеров и т.п.
-
-
-<p align="center">
-<img src="https://cdn.dribbble.com/users/4935112/screenshots/14791304/media/7c8d3b64d082c5b8556d23864d965d99.png"> 
-</p>
 
 ### Главный экран:
 
