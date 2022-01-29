@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let navigationController = UINavigationController()
+//        navigationController.navigationBar.backgroundColor = .init(red: CGFloat(18/255), green: CGFloat(19/255), blue: CGFloat(25/255), alpha: 1)
         navigationController.viewControllers = [ViewController()]
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navigationController

@@ -24,13 +24,17 @@ class ViewController: UIViewController {
     var currentSnapshot: NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>! = nil
     
     static let titleElementKind = "title-element-kind"
-    var urlPoster = "https://image.tmdb.org/t/p/original/"
+    private var urlPoster = "https://image.tmdb.org/t/p/original/"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Vonkad"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor:UIColor.white]
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationItem.backButtonTitle = ""
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.backgroundColor = .systemBackground
+        navigationController?.navigationBar.isOpaque = true
+        view.backgroundColor = .init(red: 18/255, green: 19/255, blue: 25/255, alpha: 1)
         configureHierarchy()
         
         loader.getDataFilms(urlString: loader.urlFilms) { result in
@@ -69,12 +73,11 @@ extension ViewController {
             let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.35),
                                                   heightDimension: .absolute(250))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
+            
             let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
             section.interGroupSpacing = 20
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-
+            section.orthogonalScrollingBehavior = .paging
             let titleSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                   heightDimension: .estimated(44))
             let titleSupplementary = NSCollectionLayoutBoundarySupplementaryItem(
@@ -96,7 +99,7 @@ extension ViewController {
     private func configureHierarchy() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .init(red: 18/255, green: 19/255, blue: 25/255, alpha: 1)
         collectionView.delegate = self
         collectionView.register(FilmCell.self, forCellWithReuseIdentifier: FilmCell.reuseIdentifier)
         collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: ViewController.titleElementKind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
@@ -116,16 +119,20 @@ extension ViewController {
         dataSource = UICollectionViewDiffableDataSource<SectionKind, AnyHashable>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, model) -> UICollectionViewCell? in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilmCell.reuseIdentifier, for: indexPath) as! FilmCell
             cell.imageView.kf.indicatorType = .activity
-            
+            let imageView = cell.imageView
+            imageView.layer.cornerRadius = 16
+            imageView.clipsToBounds = true
             let section = SectionKind(rawValue: indexPath.section)!
             
             switch section {
             case .tv:
                 let dat = model as! ResultsTv
                 
-                let imageView = cell.imageView
-                let urlString = self.urlPoster + dat.poster_path!
-                let url = URL(string: urlString)!
+                let urlString = self.urlPoster + (dat.poster_path ?? "")
+                guard let url = URL(string: urlString) else {
+                    cell.addData(title: dat.name, data: dat.first_air_date)
+                    return cell
+                }
                 KF.url(url)
                     .fade(duration: 1)
                     .set(to: imageView)
@@ -134,7 +141,6 @@ extension ViewController {
             case .main:
                 let dat = model as! Results
                 
-                let imageView = cell.imageView
                 let urlString = self.urlPoster + dat.poster_path
                 let url = URL(string: urlString)!
                 KF.url(url)
@@ -191,14 +197,16 @@ extension ViewController: UICollectionViewDelegate {
                 collectionView.deselectItem(at: indexPath, animated: true)
                 return
             }
-            let detailViewController = MovieViewController(name: tv.name, data: tv.first_air_date, navigationTitle: "Популярные сериалы")
+            let detailViewController = MovieViewController(id: tv.id, isFilm: false)
             self.navigationController?.pushViewController(detailViewController, animated: true)
+            
         case .main:
             guard let film = self.dataSource.itemIdentifier(for: indexPath) as? Results else {
                 collectionView.deselectItem(at: indexPath, animated: true)
                 return
             }
-            let detailViewController = MovieViewController(name: film.title, data: film.release_date, navigationTitle: "Популярные фильмы")
+            
+            let detailViewController = MovieViewController(id: film.id, isFilm: true)
             self.navigationController?.pushViewController(detailViewController, animated: true)
         }
     }

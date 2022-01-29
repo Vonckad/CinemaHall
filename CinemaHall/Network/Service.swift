@@ -11,6 +11,10 @@ import UIKit
 protocol ServiceProtocol {
     func getDataFilms(urlString: String, onResult: @escaping (Result<FilmModel, Error>) -> Void)
     func getDataTv(urlString: String, onResult: @escaping (Result<TVModel, Error>) -> Void)
+    func loadFilm(id: Int, onResult: @escaping (Result<Results, Error>) -> Void)
+    func loadTv(id: Int, onResult: @escaping (Result<ResultsTv, Error>) -> Void)
+    func loadCastFilm(id: Int, onResult: @escaping (Result<CastFilmModel, Error>) -> Void)
+    func loadCastTv(id: Int, onResult: @escaping (Result<CastFilmModel, Error>) -> Void)
     var urlFilms: String {get}
     var tvUrl: String {get}
 }
@@ -52,6 +56,90 @@ class Service: ServiceProtocol {
             }
             do {
                 let response = try JSONDecoder().decode(TVModel.self, from: data)
+                onResult(.success(response))
+            } catch(let error) {
+                print(error)
+                onResult(.failure(error))
+            }
+        })
+        dataTask.resume()
+    }
+    
+    func loadFilm(id: Int, onResult: @escaping (Result<Results, Error>) -> Void) {
+        let session = URLSession.shared
+        guard let url = URL(string: "https://api.themoviedb.org/3/movie/\(id)?api_key=946704c4cea830a60d4c476f0019196d&language=ru-RUS") else {return}
+        let urlRequest = URLRequest(url: url)
+        
+        let dataTask = session.dataTask(with: urlRequest, completionHandler: { data, response, error in
+            guard let data = data else {
+                onResult(.failure(error!))
+                return
+            }
+            do {
+                let response = try JSONDecoder().decode(Results.self, from: data)
+                onResult(.success(response))
+            } catch(let error) {
+                print(error)
+                onResult(.failure(error))
+            }
+        })
+        dataTask.resume()
+    }
+
+    func loadTv(id: Int, onResult: @escaping (Result<ResultsTv, Error>) -> Void) {
+        let session = URLSession.shared
+        guard let url = URL(string: "https://api.themoviedb.org/3/tv/\(id)?api_key=946704c4cea830a60d4c476f0019196d&language=ru-RUS") else {return}
+        let urlRequest = URLRequest(url: url)
+        
+        let dataTask = session.dataTask(with: urlRequest, completionHandler: { data, response, error in
+            guard let data = data else {
+                onResult(.failure(error!))
+                return
+            }
+            do {
+                let response = try JSONDecoder().decode(ResultsTv.self, from: data)
+                onResult(.success(response))
+            } catch(let error) {
+                print(error)
+                onResult(.failure(error))
+            }
+        })
+        dataTask.resume()
+    }
+    
+    func loadCastFilm(id: Int, onResult: @escaping (Result<CastFilmModel, Error>) -> Void) {
+        let session = URLSession.shared
+        guard let url = URL(string: "https://api.themoviedb.org/3/movie/\(id)/credits?api_key=946704c4cea830a60d4c476f0019196d&language=ru-RUS") else {return}
+        let urlRequest = URLRequest(url: url)
+        
+        let dataTask = session.dataTask(with: urlRequest, completionHandler: { data, response, error in
+            guard let data = data else {
+                onResult(.failure(error!))
+                return
+            }
+            do {
+                let response = try JSONDecoder().decode(CastFilmModel.self, from: data)
+                onResult(.success(response))
+            } catch(let error) {
+                print(error)
+                onResult(.failure(error))
+            }
+        })
+        dataTask.resume()
+    }
+    
+    func loadCastTv(id: Int, onResult: @escaping (Result<CastFilmModel, Error>) -> Void) {
+        let session = URLSession.shared
+        guard let url = URL(string: "https://api.themoviedb.org/3/tv/\(id)/credits?api_key=946704c4cea830a60d4c476f0019196d&language=ru-RUS") else {return}
+        let urlRequest = URLRequest(url: url)
+    
+        let dataTask = session.dataTask(with: urlRequest, completionHandler: { data, response, error in
+            guard let data = data else {
+                onResult(.failure(error!))
+                return
+            }
+            do {
+                let response = try JSONDecoder().decode(CastFilmModel.self, from: data)
                 onResult(.success(response))
             } catch(let error) {
                 print(error)
