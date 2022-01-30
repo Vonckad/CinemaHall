@@ -133,13 +133,13 @@ extension ViewController {
                 
                 let urlString = self.urlPoster + (dat.poster_path ?? "")
                 guard let url = URL(string: urlString) else {
-                    cell.addData(title: dat.name, data: dat.first_air_date)
+                    cell.addData(title: dat.name, data: dat.first_air_date ?? "")
                     return cell
                 }
                 KF.url(url)
                     .fade(duration: 1)
                     .set(to: imageView)
-                cell.addData(title: dat.name, data: dat.first_air_date)
+                cell.addData(title: dat.name, data: dat.first_air_date ?? "")
                 return cell
             case .main:
                 let dat = model as! Results

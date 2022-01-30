@@ -18,5 +18,5 @@ struct ResultsTv: Decodable, Hashable {
     var overview: String
     var poster_path: String?
     var name: String
-    var first_air_date: String
+    var first_air_date: String?
 }

@@ -33,12 +33,20 @@ class MovieViewController: UIViewController {
     var castCollectionView: UICollectionView!
     var watchButton: UIButton!
     
+    let gradientLayer = CAGradientLayer()
+    let gradientView = UIView()
+    
     let loader: ServiceProtocol = Service()
     var castsModel: [ResultCastFilm] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.tintColor = .white
+
+        let item = UIBarButtonItem(image: UIImage(named: "bookmark"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(addBookmark))
+        self.navigationItem.rightBarButtonItem = item
+
         setupUI()
         if isFilm {
             DispatchQueue.global().async {
@@ -105,12 +113,28 @@ extension MovieViewController {
             KF.url(url)
                 .fade(duration: 1)
                 .set(to: imageView)
-            self.setText(title: dataTv.name, description: dataTv.first_air_date, overview: dataTv.overview)
+            self.setText(title: dataTv.name, description: dataTv.first_air_date ?? "", overview: dataTv.overview)
         }
+        
+        gradientView.frame = CGRect(x: 0, y: 0, width: imageView.bounds.width, height: imageView.bounds.height * 1.2)
+        gradientLayer.frame = gradientView.bounds
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor(red: 18/255, green: 19/255, blue: 25/255, alpha: 1).cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.5)
+        gradientView.layer.addSublayer(gradientLayer)
+        backgroundView.addSubview(gradientView)
     }
     
     private func reloadCasts(casts: CastFilmModel) {
         castsModel = casts.cast
+        if castsModel.isEmpty {
+            castLabel.isHidden = true
+            for constraint in castCollectionView.constraints {
+                if constraint.identifier == "heightAnchorCastCollectionView" {
+                    constraint.constant = 10
+                }
+            }
+        }
         castCollectionView.reloadData()
     }
     
@@ -197,8 +221,10 @@ extension MovieViewController {
         imageView.kf.indicatorType = .activity
         
         // configure constraints
-        let topImageViewConstrain = view.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 44)
+        let topImageViewConstrain = view.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 64)
         topImageViewConstrain.priority = .init(rawValue: 900)
+        let heightAnchorCastCollectionView = castCollectionView.heightAnchor.constraint(equalToConstant: 180)
+        heightAnchorCastCollectionView.identifier = "heightAnchorCastCollectionView"
         
         NSLayoutConstraint.activate([
             
@@ -214,7 +240,7 @@ extension MovieViewController {
             backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backgroundView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             scrollView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
-            nameLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 350),
+            nameLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 300),
             nameLabel.topAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: 8),
             scrollView.bottomAnchor.constraint(equalTo: watchButton.bottomAnchor),//
             scrollView.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
@@ -234,7 +260,7 @@ extension MovieViewController {
             castCollectionView.topAnchor.constraint(equalTo: castLabel.bottomAnchor, constant: 8),
             castCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
             scrollView.trailingAnchor.constraint(equalTo: castCollectionView.trailingAnchor),
-            castCollectionView.heightAnchor.constraint(equalToConstant: 180),
+            heightAnchorCastCollectionView,
             
             watchButton.topAnchor.constraint(equalTo: castCollectionView.bottomAnchor, constant: 16),
             watchButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 64),
@@ -248,7 +274,7 @@ extension MovieViewController {
     }
 }
 
-//MARK: - @objc func watchNow()
+//MARK: - @objc func
 extension MovieViewController {
     @objc func watchNow() {
         if let url = URL(string: "https://www.themoviedb.org/\(isFilm ? "movie" : "tv" )/\(id)") {
@@ -256,6 +282,9 @@ extension MovieViewController {
             vc.modalPresentationStyle = .popover
             showDetailViewController(vc, sender: self)
         }
+    }
+    @objc func addBookmark() {
+        print("addBookmark = \(id)")
     }
 }
 
