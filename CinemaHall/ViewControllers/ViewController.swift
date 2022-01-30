@@ -8,6 +8,19 @@
 import UIKit
 import Kingfisher
 
+extension ViewController: MovieViewControllerDelegate {
+    func addBookmark(_ id: Int, isFilm: Bool) {
+        isFilm ? bookmarkFilm.append(id) : bookmarkTv.append(id)
+    }
+    func removeBookmark(_ id: Int, isFilm: Bool) {
+        if isFilm {
+            bookmarkFilm = bookmarkFilm.filter{$0 != id}
+        } else {
+            bookmarkTv = bookmarkTv.filter{$0 != id}
+        }
+    }
+}
+
 class ViewController: UIViewController {
     
     enum SectionKind: Int, CaseIterable {
@@ -16,6 +29,9 @@ class ViewController: UIViewController {
     
     var filmModel: [Results] = []
     var tvModel: [ResultsTv] = []
+    
+    var bookmarkFilm: [Int] = []
+    var bookmarkTv: [Int] = []
     
     var collectionView: UICollectionView! = nil
     let loader: ServiceProtocol = Service()
@@ -201,6 +217,12 @@ extension ViewController: UICollectionViewDelegate {
                 return
             }
             let detailViewController = MovieViewController(id: tv.id, isFilm: false)
+            detailViewController.delegate = self
+            for makr in bookmarkTv {
+                if makr == tv.id {
+                    detailViewController.isAddBookMark = true
+                }
+            }
             self.navigationController?.pushViewController(detailViewController, animated: true)
             
         case .main:
@@ -208,8 +230,13 @@ extension ViewController: UICollectionViewDelegate {
                 collectionView.deselectItem(at: indexPath, animated: true)
                 return
             }
-            
             let detailViewController = MovieViewController(id: film.id, isFilm: true)
+            detailViewController.delegate = self
+            for makr in bookmarkFilm {
+                if makr == film.id {
+                    detailViewController.isAddBookMark = true
+                }
+            }
             self.navigationController?.pushViewController(detailViewController, animated: true)
         }
     }

@@ -9,7 +9,15 @@ import UIKit
 import Kingfisher
 import SafariServices
 
+protocol MovieViewControllerDelegate {
+    func addBookmark(_ id: Int, isFilm: Bool)
+    func removeBookmark(_ id: Int, isFilm: Bool)
+}
+
 class MovieViewController: UIViewController {
+    
+    var delegate: MovieViewControllerDelegate?
+    var isAddBookMark = false
     
     let id: Int
     let isFilm: Bool
@@ -33,6 +41,8 @@ class MovieViewController: UIViewController {
     var castCollectionView: UICollectionView!
     var watchButton: UIButton!
     
+    var item: UIBarButtonItem!
+    
     let gradientLayer = CAGradientLayer()
     let gradientView = UIView()
     
@@ -43,8 +53,9 @@ class MovieViewController: UIViewController {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = .white
-
-        let item = UIBarButtonItem(image: UIImage(named: "bookmark"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(addBookmark))
+        
+        item = UIBarButtonItem(image: UIImage(named: isAddBookMark ? "bookmarkFill" : "bookmark"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(addBookmark))
+        
         self.navigationItem.rightBarButtonItem = item
 
         setupUI()
@@ -283,8 +294,17 @@ extension MovieViewController {
             showDetailViewController(vc, sender: self)
         }
     }
+    
     @objc func addBookmark() {
-        print("addBookmark = \(id)")
+        if isAddBookMark == false {
+            isAddBookMark = true
+            item.image = UIImage(named: "bookmarkFill")
+            delegate?.addBookmark(id, isFilm: isFilm)
+        } else {
+            isAddBookMark = false
+            item.image = UIImage(named: "bookmark")
+            delegate?.removeBookmark(id, isFilm: isFilm)
+        }
     }
 }
 
