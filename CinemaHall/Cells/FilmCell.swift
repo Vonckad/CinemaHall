@@ -46,10 +46,6 @@ extension FilmCell {
         categoryLabel.font = UIFont.preferredFont(forTextStyle: .caption2)
         categoryLabel.adjustsFontForContentSizeCategory = true
         categoryLabel.textColor = .placeholderText
-
-        imageView.layer.borderColor = UIColor.black.cgColor
-        imageView.layer.borderWidth = 1
-        imageView.layer.cornerRadius = 4
         
         let spacing = CGFloat(10)
         NSLayoutConstraint.activate([

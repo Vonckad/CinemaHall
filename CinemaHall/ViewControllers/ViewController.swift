@@ -8,19 +8,6 @@
 import UIKit
 import Kingfisher
 
-extension ViewController: MovieViewControllerDelegate {
-    func addBookmark(_ id: Int, isFilm: Bool) {
-        isFilm ? bookmarkFilm.append(id) : bookmarkTv.append(id)
-    }
-    func removeBookmark(_ id: Int, isFilm: Bool) {
-        if isFilm {
-            bookmarkFilm = bookmarkFilm.filter{$0 != id}
-        } else {
-            bookmarkTv = bookmarkTv.filter{$0 != id}
-        }
-    }
-}
-
 class ViewController: UIViewController {
     
     enum SectionKind: Int, CaseIterable {
@@ -55,7 +42,12 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.isOpaque = true
         view.backgroundColor = .init(red: 18/255, green: 19/255, blue: 25/255, alpha: 1)
         configureHierarchy()
-        
+        loadData()
+    }
+}
+
+extension ViewController {
+    private func loadData() {
         loader.getDataFilms(urlString: loader.urlFilms) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -63,7 +55,7 @@ class ViewController: UIViewController {
                     self.filmModel = model.results
                     self.reloadData()
                 case .failure(_):
-                    fatalError("error load")
+                    self.createAlertView(title: "Сбой загрузки фильмов!", massage: "Проверьте подключение к интернету")
                 }
             }
         }
@@ -75,13 +67,14 @@ class ViewController: UIViewController {
                     self.tvModel = model.results
                     self.reloadData()
                 case .failure(_):
-                    fatalError("error load tv")
+                    self.createAlertView(title: "Сбой загрузки сериалов!", massage: "Проверьте подключение к интернету")
                 }
             }
         }
     }
 }
 
+//MARK: - create collectionView
 extension ViewController {
     private func createLayout() -> UICollectionViewLayout {
         let sectionProvider = { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
@@ -204,6 +197,19 @@ extension ViewController {
     }
 }
 
+//MARK: - createAlertView
+extension ViewController {
+    private func createAlertView(title: String, massage: String) {
+        let allert = UIAlertController.init(title: title, message: massage, preferredStyle: .alert)
+        let reloadAction = UIAlertAction(title: "Обновить", style: .default) { _ in
+            self.loadData()
+        }
+        
+        allert.addAction(reloadAction)
+        present(allert, animated: true, completion: nil)
+    }
+}
+
 //MARK: - UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -247,3 +253,16 @@ extension ViewController: UICollectionViewDelegate {
     }
 }
 
+//MARK: - MovieViewControllerDelegate
+extension ViewController: MovieViewControllerDelegate {
+    func addBookmark(_ id: Int, isFilm: Bool) {
+        isFilm ? bookmarkFilm.append(id) : bookmarkTv.append(id)
+    }
+    func removeBookmark(_ id: Int, isFilm: Bool) {
+        if isFilm {
+            bookmarkFilm = bookmarkFilm.filter{$0 != id}
+        } else {
+            bookmarkTv = bookmarkTv.filter{$0 != id}
+        }
+    }
+}

@@ -52,13 +52,17 @@ class MovieViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.tintColor = .white
-        
+        navigationController?.navigationBar.tintColor = .lightGray
         item = UIBarButtonItem(image: UIImage(named: isAddBookMark ? "bookmarkFill" : "bookmark"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(addBookmark))
-        
         self.navigationItem.rightBarButtonItem = item
-
         setupUI()
+        loadData()
+    }
+}
+
+// MARK: - loadData
+extension MovieViewController {
+    private func loadData() {
         if isFilm {
             DispatchQueue.global().async {
                 self.loader.loadFilm(id: self.id) { result in
@@ -67,7 +71,7 @@ class MovieViewController: UIViewController {
                         case .success(let data):
                             self.reloadData(dataFilm: data)
                         case .failure(_):
-                            fatalError("error load film id = \(self.id)")
+                            self.createAlertView(title: "Сбой загрузки!", massage: "Проверьте подключение к интернету")
                         }
                     }
                 }
@@ -77,7 +81,7 @@ class MovieViewController: UIViewController {
                         case .success(let data):
                             self.reloadCasts(casts: data)
                         case .failure(_):
-                            fatalError("error load cast for film id = \(self.id)")
+                            self.createAlertView(title: "Сбой загрузки!", massage: "Проверьте подключение к интернету")
                         }
                     }
                 }
@@ -90,7 +94,7 @@ class MovieViewController: UIViewController {
                         case .success(let data):
                             self.reloadData(dataTv: data)
                         case .failure(_):
-                            fatalError("error load film id = \(self.id)")
+                            self.createAlertView(title: "Сбой загрузки!", massage: "Проверьте подключение к интернету")
                         }
                     }
                 }
@@ -100,7 +104,7 @@ class MovieViewController: UIViewController {
                         case .success(let data):
                             self.reloadCasts(casts: data)
                         case .failure(_):
-                            fatalError("error load cast for tv id = \(self.id)")
+                            self.createAlertView(title: "Сбой загрузки!", massage: "Проверьте подключение к интернету")
                         }
                     }
                 }
@@ -108,6 +112,20 @@ class MovieViewController: UIViewController {
         }
     }
 }
+
+//MARK: - createAlertView
+extension MovieViewController {
+    private func createAlertView(title: String, massage: String) {
+        let allert = UIAlertController.init(title: title, message: massage, preferredStyle: .alert)
+        let reloadAction = UIAlertAction(title: "Обновить", style: .default) { _ in
+            self.loadData()
+        }
+        
+        allert.addAction(reloadAction)
+        present(allert, animated: true, completion: nil)
+    }
+}
+
 //MARK: - configure content
 extension MovieViewController {
     private func reloadData(dataFilm: Results? = nil, dataTv: ResultsTv? = nil) {
@@ -253,7 +271,7 @@ extension MovieViewController {
             scrollView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
             nameLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 300),
             nameLabel.topAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: 8),
-            scrollView.bottomAnchor.constraint(equalTo: watchButton.bottomAnchor),//
+            scrollView.bottomAnchor.constraint(equalTo: watchButton.bottomAnchor, constant: 44),// scrollView.bottomAnchor
             scrollView.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             nameLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             
