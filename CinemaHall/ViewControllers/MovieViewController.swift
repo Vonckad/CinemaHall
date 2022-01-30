@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import SafariServices
 
 class MovieViewController: UIViewController {
     
@@ -30,6 +31,7 @@ class MovieViewController: UIViewController {
     var backgroundView: UIView!
     var castLabel: UILabel!
     var castCollectionView: UICollectionView!
+    var watchButton: UIButton!
     
     let loader: ServiceProtocol = Service()
     var castsModel: [ResultCastFilm] = []
@@ -79,7 +81,7 @@ class MovieViewController: UIViewController {
                         case .success(let data):
                             self.reloadCasts(casts: data)
                         case .failure(_):
-                            fatalError("error load cast for film id = \(self.id)")
+                            fatalError("error load cast for tv id = \(self.id)")
                         }
                     }
                 }
@@ -90,6 +92,8 @@ class MovieViewController: UIViewController {
 //MARK: - configure content
 extension MovieViewController {
     private func reloadData(dataFilm: Results? = nil, dataTv: ResultsTv? = nil) {
+        watchButton.isHidden = false
+        castLabel.isHidden = false
         if let dataFilm = dataFilm {
             let url = URL(string: "https://image.tmdb.org/t/p/original/\(dataFilm.poster_path)")!
             KF.url(url)
@@ -157,6 +161,7 @@ extension MovieViewController {
         castLabel = UILabel()
         castLabel.translatesAutoresizingMaskIntoConstraints = false
         castLabel.text = "Cast"
+        castLabel.isHidden = true
         
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: 100, height: 140)
@@ -169,6 +174,15 @@ extension MovieViewController {
         castCollectionView.register(FilmCell.self, forCellWithReuseIdentifier: "CastCell")
         castCollectionView.dataSource = self
         castCollectionView.delegate = self
+        
+        watchButton = UIButton()
+        watchButton.translatesAutoresizingMaskIntoConstraints = false
+        watchButton.setTitle("Смотреть сейчас", for: .normal)
+        watchButton.setTitleColor(.white, for: .normal)
+        watchButton.addTarget(self, action: #selector(watchNow), for: .touchUpInside)
+        watchButton.backgroundColor = UIColor.init(red: 198/255, green: 46/255, blue: 54/255, alpha: 1)
+        watchButton.layer.cornerRadius = 8
+        watchButton.isHidden = true
 
         self.view.addSubview(scrollView)
         scrollView.addSubview(backgroundView)
@@ -178,6 +192,7 @@ extension MovieViewController {
         scrollView.addSubview(overviewLabel)
         scrollView.addSubview(castLabel)
         scrollView.addSubview(castCollectionView)
+        scrollView.addSubview(watchButton)
         
         imageView.kf.indicatorType = .activity
         
@@ -201,7 +216,7 @@ extension MovieViewController {
             scrollView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
             nameLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 350),
             nameLabel.topAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: 8),
-            scrollView.bottomAnchor.constraint(equalTo: castCollectionView.bottomAnchor),//
+            scrollView.bottomAnchor.constraint(equalTo: watchButton.bottomAnchor),//
             scrollView.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             nameLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             
@@ -221,10 +236,26 @@ extension MovieViewController {
             scrollView.trailingAnchor.constraint(equalTo: castCollectionView.trailingAnchor),
             castCollectionView.heightAnchor.constraint(equalToConstant: 180),
             
+            watchButton.topAnchor.constraint(equalTo: castCollectionView.bottomAnchor, constant: 16),
+            watchButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 64),
+            watchButton.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -64),
+            watchButton.heightAnchor.constraint(equalToConstant: 44),
+            
             imageView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor)
         ])
+    }
+}
+
+//MARK: - @objc func watchNow()
+extension MovieViewController {
+    @objc func watchNow() {
+        if let url = URL(string: "https://www.themoviedb.org/\(isFilm ? "movie" : "tv" )/\(id)") {
+            let vc = SFSafariViewController(url: url)
+            vc.modalPresentationStyle = .popover
+            showDetailViewController(vc, sender: self)
+        }
     }
 }
 

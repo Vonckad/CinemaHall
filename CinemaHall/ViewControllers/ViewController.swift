@@ -31,6 +31,9 @@ class ViewController: UIViewController {
         navigationItem.title = "Vonkad"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor:UIColor.white]
         navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.view.backgroundColor = .clear
         navigationItem.backButtonTitle = ""
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.isOpaque = true
