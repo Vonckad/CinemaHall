@@ -23,6 +23,8 @@ class ViewController: UIViewController {
     var collectionView: UICollectionView! = nil
     let loader: ServiceProtocol = Service()
     
+    var actView = UIActivityIndicatorView()
+    
     var dataSource: UICollectionViewDiffableDataSource<SectionKind, AnyHashable>! = nil
     var currentSnapshot: NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>! = nil
     
@@ -124,6 +126,10 @@ extension ViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             ])
         
+        actView = UIActivityIndicatorView(frame: CGRect(x: view.center.x, y: view.center.y, width: 20, height: 20))
+        actView.startAnimating()
+        view.addSubview(actView)
+        
         setupDataSource()
     }
     
@@ -194,6 +200,8 @@ extension ViewController {
         }
 
         dataSource.apply(currentSnapshot, animatingDifferences: false)
+        self.actView.stopAnimating()
+        self.actView.isHidden = true
     }
 }
 
@@ -251,6 +259,9 @@ extension ViewController: UICollectionViewDelegate {
         // This will cancel all unfinished downloading task when the cell disappearing.
         (cell as! FilmCell).imageView.kf.cancelDownloadTask()
     }
+    
+    
+    
 }
 
 //MARK: - MovieViewControllerDelegate
@@ -266,3 +277,4 @@ extension ViewController: MovieViewControllerDelegate {
         }
     }
 }
+

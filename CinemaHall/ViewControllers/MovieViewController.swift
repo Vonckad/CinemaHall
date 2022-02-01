@@ -46,6 +46,8 @@ class MovieViewController: UIViewController {
     let gradientLayer = CAGradientLayer()
     let gradientView = UIView()
     
+    var actView = UIActivityIndicatorView()
+    
     let loader: ServiceProtocol = Service()
     var castsModel: [ResultCastFilm] = []
     
@@ -152,6 +154,9 @@ extension MovieViewController {
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.5)
         gradientView.layer.addSublayer(gradientLayer)
         backgroundView.addSubview(gradientView)
+        
+        self.actView.stopAnimating()
+        self.actView.isHidden = true
     }
     
     private func reloadCasts(casts: CastFilmModel) {
@@ -165,6 +170,8 @@ extension MovieViewController {
             }
         }
         castCollectionView.reloadData()
+        self.actView.stopAnimating()
+        self.actView.isHidden = true
     }
     
     private func setText(title: String, description: String, overview: String) {
@@ -214,6 +221,7 @@ extension MovieViewController {
         castLabel = UILabel()
         castLabel.translatesAutoresizingMaskIntoConstraints = false
         castLabel.text = "Cast"
+        castLabel.textColor = .white
         castLabel.isHidden = true
         
         let flowLayout = UICollectionViewFlowLayout()
@@ -300,6 +308,10 @@ extension MovieViewController {
             backgroundView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor)
         ])
+        
+        actView = UIActivityIndicatorView(frame: CGRect(x: view.center.x, y: view.center.y, width: 20, height: 20))
+        actView.startAnimating()
+        view.addSubview(actView)
     }
 }
 
