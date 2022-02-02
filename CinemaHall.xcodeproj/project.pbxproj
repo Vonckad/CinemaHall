@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E30D324127A9F7F600C7BCB1 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30D324027A9F7F500C7BCB1 /* TabView.swift */; };
 		E3B372E0279EE1C50022EF44 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372DF279EE1C50022EF44 /* Service.swift */; };
 		E3B372E2279F1B2A0022EF44 /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */; };
 		E3B372E4279F28430022EF44 /* TVModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B372E3279F28430022EF44 /* TVModel.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E30D324027A9F7F500C7BCB1 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		E3B372DF279EE1C50022EF44 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
 		E3B372E3279F28430022EF44 /* TVModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVModel.swift; sourceTree = "<group>"; };
@@ -51,6 +53,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E30D324227AAF5A000C7BCB1 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				E3E3ABDE279D69AC00D63507 /* FilmCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		E30D324327AAF5C800C7BCB1 /* TitleSupplementary */ = {
+			isa = PBXGroup;
+			children = (
+				E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */,
+			);
+			path = TitleSupplementary;
+			sourceTree = "<group>";
+		};
+		E30D324427AAF5D900C7BCB1 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				E30D324027A9F7F500C7BCB1 /* TabView.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		E3B372DE279EE1AF0022EF44 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -81,7 +107,7 @@
 				E3B372DE279EE1AF0022EF44 /* Network */,
 				E3E3ABD7279D5A0400D63507 /* Delegate */,
 				E3E3ABD8279D5A8A00D63507 /* ViewControllers */,
-				E3E3ABE0279D69B500D63507 /* Cells */,
+				E3E3ABE0279D69B500D63507 /* View */,
 				E3E3ABDB279D653F00D63507 /* Models */,
 				E3E3ABCC279D587F00D63507 /* Assets.xcassets */,
 				E3E3ABCE279D587F00D63507 /* LaunchScreen.storyboard */,
@@ -112,19 +138,20 @@
 			isa = PBXGroup;
 			children = (
 				E3E3ABD9279D653B00D63507 /* FilmModel.swift */,
-				E3BAE13627A569EE008837C9 /* CastFilmModel.swift */,
 				E3B372E3279F28430022EF44 /* TVModel.swift */,
+				E3BAE13627A569EE008837C9 /* CastFilmModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		E3E3ABE0279D69B500D63507 /* Cells */ = {
+		E3E3ABE0279D69B500D63507 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				E3B372E1279F1B2A0022EF44 /* TitleSupplementaryView.swift */,
-				E3E3ABDE279D69AC00D63507 /* FilmCell.swift */,
+				E30D324427AAF5D900C7BCB1 /* TabBar */,
+				E30D324227AAF5A000C7BCB1 /* Cell */,
+				E30D324327AAF5C800C7BCB1 /* TitleSupplementary */,
 			);
-			path = Cells;
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E30D324127A9F7F600C7BCB1 /* TabView.swift in Sources */,
 				E3B372E0279EE1C50022EF44 /* Service.swift in Sources */,
 				E3E3ABC8279D587800D63507 /* ViewController.swift in Sources */,
 				E3E3ABC4279D587800D63507 /* AppDelegate.swift in Sources */,

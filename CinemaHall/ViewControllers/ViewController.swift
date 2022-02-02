@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import SwiftUI
 
 class ViewController: UIViewController {
     
@@ -24,6 +25,9 @@ class ViewController: UIViewController {
     let loader: ServiceProtocol = Service()
     
     var actView = UIActivityIndicatorView()
+    
+    var barVisible = true
+    var tabView: TabView!
     
     var dataSource: UICollectionViewDiffableDataSource<SectionKind, AnyHashable>! = nil
     var currentSnapshot: NSDiffableDataSourceSnapshot<SectionKind, AnyHashable>! = nil
@@ -117,13 +121,26 @@ extension ViewController {
         collectionView.delegate = self
         collectionView.register(FilmCell.self, forCellWithReuseIdentifier: FilmCell.reuseIdentifier)
         collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: ViewController.titleElementKind, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
+        
+        tabView = TabView()
+        tabView.translatesAutoresizingMaskIntoConstraints = false
+        tabView.backgroundColor = UIColor.init(red: 198/255, green: 46/255, blue: 54/255, alpha: 1)
+        tabView.layer.cornerRadius = 32
+        tabView.clipsToBounds = true
+        
         view.addSubview(collectionView)
+        view.addSubview(tabView)
         
         NSLayoutConstraint.activate([
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            tabView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32),
+            tabView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32),
+            tabView.heightAnchor.constraint(equalToConstant: 64),
+            tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32)
             ])
         
         actView = UIActivityIndicatorView(frame: CGRect(x: view.center.x, y: view.center.y, width: 20, height: 20))
@@ -259,9 +276,6 @@ extension ViewController: UICollectionViewDelegate {
         // This will cancel all unfinished downloading task when the cell disappearing.
         (cell as! FilmCell).imageView.kf.cancelDownloadTask()
     }
-    
-    
-    
 }
 
 //MARK: - MovieViewControllerDelegate
@@ -278,3 +292,40 @@ extension ViewController: MovieViewControllerDelegate {
     }
 }
 
+//MARK: - TabBar, UIScrollViewDelegate
+extension ViewController: UIScrollViewDelegate {
+   
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let translation = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
+        performHeaderCheck(translation: translation)
+    }
+    
+    func performHeaderCheck(translation:CGPoint) {
+        if translation.y == 0 { return }
+        if translation.y > 0 {
+            // Scroll Down
+            if !barVisible {
+                showBar()
+            }
+        } else {
+            // Scroll Up
+            if barVisible {
+                hideBar()
+            }
+        }
+    }
+        
+    func hideBar() {
+        self.barVisible = false
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
+            self.tabView.frame.origin.y = self.view.frame.height + 50
+        })
+    }
+    
+    func showBar() {
+        self.barVisible = true
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
+            self.tabView.frame.origin.y = self.view.frame.height - 100
+        })
+    }
+}
